@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.foodUtilitySystem.KhaanaBachaoApp.dao.DonationDetailsDAO;
 import com.foodUtilitySystem.KhaanaBachaoApp.entity.DonationDetails;
+import com.foodUtilitySystem.KhaanaBachaoApp.entity.DonationReceived;
 
 @RestController
 @RequestMapping("/api")
@@ -21,5 +22,10 @@ public class DonorRestController {
 	@GetMapping("/donors")
 	public List<DonationDetails> getAll(){
 		return donorDao.showMyDonations();
+	}
+	
+	@GetMapping("/received")
+	public List<DonationReceived> getReceivedAll(){
+		return donorDao.showReceived();
 	}
 }

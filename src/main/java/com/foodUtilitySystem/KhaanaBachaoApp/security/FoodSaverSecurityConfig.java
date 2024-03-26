@@ -31,6 +31,7 @@ public class FoodSaverSecurityConfig {
 		              .requestMatchers(HttpMethod.PUT,"/api/foodSavers").hasRole("VOLUNTEER")
 		              .requestMatchers(HttpMethod.POST,"/api/volunteers").hasRole("VOLUNTEER")
 		              .requestMatchers(HttpMethod.DELETE,"/api/volunteers/**").hasRole("VOLUNTEER")
+		              .requestMatchers(HttpMethod.GET,"/api/received").hasRole("VOLUNTEER")
 		              .requestMatchers(HttpMethod.GET,"/api/volunteers/**").hasRole("DONOR")
 		              .requestMatchers(HttpMethod.GET,"/api/donors").hasRole("DONOR")
 		              .requestMatchers(HttpMethod.PUT,"/api/volunteers/**").hasRole("DONOR")

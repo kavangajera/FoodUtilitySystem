@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.foodUtilitySystem.KhaanaBachaoApp.entity.DonationDetails;
+import com.foodUtilitySystem.KhaanaBachaoApp.entity.DonationReceived;
 import com.foodUtilitySystem.KhaanaBachaoApp.entity.Volunteer;
 import com.foodUtilitySystem.KhaanaBachaoApp.rest.FoodSaverNotFoundException;
 
@@ -61,9 +62,16 @@ public class VolunteerDAOImpl implements VolunteerDao{
 		String donor = auth.getName();  
 		int curr_qty=v.getQty();
 		String uname = v.getUname();
-		String msg = "Donated "+v.getFoodName()+" "+qty+" to "+uname;
+		String msg = "Donated Food: "+v.getFoodName()+" "+qty+" to "+uname;
 		DonationDetails ds = new DonationDetails(donor,msg);
 		em.merge(ds);
+		
+		String vol = uname;
+		String msg2 = "Received Food: "+v.getFoodName()+" from"+donor;
+		DonationReceived dr = new DonationReceived(vol,msg2);
+		em.merge(dr);
+		
+		
 		v.setQty(curr_qty-qty);
 		Volunteer v1=em.merge(v);
 		
@@ -87,9 +95,13 @@ public class VolunteerDAOImpl implements VolunteerDao{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String donor = auth.getName();
 		String uname = v.getUname();
-		String msg = "Donated Rs."+amount+" to "+uname;
-		DonationDetails ds = new DonationDetails(donor,msg);
+		String msg1 = "Donated Rs."+amount+" to "+uname;
+		DonationDetails ds = new DonationDetails(donor,msg1);
 		em.merge(ds);
+		String vol = uname;
+		String msg2 = "Received Rs."+amount+" from"+donor;
+		DonationReceived dr = new DonationReceived(vol,msg2);
+		em.merge(dr);
 	}
 	@Override
 	@Transactional
