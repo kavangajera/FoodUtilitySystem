@@ -43,9 +43,9 @@ public class VolunteerDAOImpl implements VolunteerDao{
 	public void donateFood(Volunteer v,int qty) {
 		// TODO Auto-generated method stub
 		try {
-		Volunteer temp = em.createQuery("from Volunteer v where v.uname=:name",Volunteer.class)
-				.setParameter("name",v.getUname())
-				.getSingleResult();
+			TypedQuery<Volunteer>temp = em.createQuery("from Volunteer v where v.uname=:name",Volunteer.class)
+					.setParameter("name",v.getUname());
+			List<Volunteer>vs = temp.getResultList();
 		}
 		catch (NoResultException e) {
 		    // Handle the case when no result is found
@@ -76,9 +76,9 @@ public class VolunteerDAOImpl implements VolunteerDao{
 	@Transactional
 	public void donateMoney(Volunteer v,double amount) {
 		try {
-		Volunteer temp = em.createQuery("from Volunteer v where v.uname=:name",Volunteer.class)
-				.setParameter("name",v.getUname())
-				.getSingleResult();
+		TypedQuery<Volunteer>temp = em.createQuery("from Volunteer v where v.uname=:name",Volunteer.class)
+				.setParameter("name",v.getUname());
+		List<Volunteer>vs = temp.getResultList();
 		}
 		catch (NoResultException e) {
 		    throw new FoodSaverNotFoundException("Volunteer not found with username - " + v.getUname());
@@ -106,6 +106,7 @@ public class VolunteerDAOImpl implements VolunteerDao{
 		return vs;
 	}
 	@Override
+	@Transactional
 	public void deleteById(int id) {
 		// TODO Auto-generated method stub
 		Volunteer v = em.find(Volunteer.class, id);
