@@ -26,12 +26,15 @@ public class FoodSaverSecurityConfig {
 		              .requestMatchers(HttpMethod.GET,"/api/foodSavers").hasRole("ADMIN")
 		              .requestMatchers(HttpMethod.GET,"/api/foodSavers/**").hasRole("ADMIN")
 		              .requestMatchers(HttpMethod.POST,"/api/foodSavers").hasRole("ADMIN")
-		              .requestMatchers(HttpMethod.DELETE,"/api/foodSavers/**").hasRole("VOLUNTEER")
+		              .requestMatchers(HttpMethod.DELETE,"/api/foodSavers/**").hasRole("ADMIN")
+		              .requestMatchers(HttpMethod.GET,"/api/volunteers").hasRole("VOLUNTEER") 
 		              .requestMatchers(HttpMethod.PUT,"/api/foodSavers").hasRole("VOLUNTEER")
+		              .requestMatchers(HttpMethod.POST,"/api/volunteers").hasRole("VOLUNTEER")
+		              .requestMatchers(HttpMethod.DELETE,"/api/volunteers/**").hasRole("VOLUNTEER")
 		              .requestMatchers(HttpMethod.GET,"/api/volunteers/**").hasRole("DONOR")
 		              .requestMatchers(HttpMethod.PUT,"/api/volunteers/**").hasRole("DONOR")
-		              .requestMatchers(HttpMethod.POST,"/api/volunteers").hasRole("VOLUNTEER")
-		                
+		             
+		               
 				);
 		
 		http.httpBasic(Customizer.withDefaults());

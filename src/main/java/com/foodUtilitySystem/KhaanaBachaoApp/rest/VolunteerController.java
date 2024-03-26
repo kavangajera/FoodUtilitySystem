@@ -3,6 +3,9 @@ package com.foodUtilitySystem.KhaanaBachaoApp.rest;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,6 +48,17 @@ public class VolunteerController {
      public String donateMoney(@RequestBody Volunteer v,@PathVariable double money) {
     	 vdao.donateMoney(v, money);
     	 return "Donated Rs."+money;
+     }
+     @GetMapping("/volunteers")
+     public List<Volunteer> showProfile() {
+    		 Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    		 String vol = auth.getName();
+    		 return vdao.findByName(vol);
+    	 }
+     @DeleteMapping("/volunteers/{v_id}")
+     public String deleteById(@PathVariable int v_id) {
+    	 vdao.deleteById(v_id);
+    	 return "Volunteer with Request id - "+v_id+" is Deleted !";
      }
      
 }

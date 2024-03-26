@@ -12,6 +12,7 @@ import com.foodUtilitySystem.KhaanaBachaoApp.entity.Volunteer;
 import com.foodUtilitySystem.KhaanaBachaoApp.rest.FoodSaverNotFoundException;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 
@@ -41,15 +42,19 @@ public class VolunteerDAOImpl implements VolunteerDao{
 	@Transactional
 	public void donateFood(Volunteer v,int qty) {
 		// TODO Auto-generated method stub
-		Volunteer temp = em.createQuery("from FoodSavers where uname=:name",Volunteer.class)
+		try {
+		Volunteer temp = em.createQuery("from Volunteer v where v.uname=:name",Volunteer.class)
 				.setParameter("name",v.getUname())
 				.getSingleResult();
-		if(temp==null) {
-			throw new FoodSaverNotFoundException("Volunteer not found of username - "+v.getUname());
 		}
+		catch (NoResultException e) {
+		    // Handle the case when no result is found
+		    throw new FoodSaverNotFoundException("Volunteer not found with username - " + v.getUname());
+		}
+		String strdate = v.getDueDate();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		LocalDate dueDate = LocalDate.parse(v.getDueDate(), formatter);
-		if(java.time.LocalDate.now().compareTo(dueDate)<0) {
+		LocalDate dueDate = LocalDate.parse(strdate, formatter);
+		if(LocalDate.now().compareTo(dueDate)>0) {
 			throw new FoodSaverNotFoundException("Date is expired!");
 		}
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -70,12 +75,13 @@ public class VolunteerDAOImpl implements VolunteerDao{
 	@Override
 	@Transactional
 	public void donateMoney(Volunteer v,double amount) {
-		
-		Volunteer temp = em.createQuery("from FoodSavers where uname=:name",Volunteer.class)
+		try {
+		Volunteer temp = em.createQuery("from Volunteer v where v.uname=:name",Volunteer.class)
 				.setParameter("name",v.getUname())
 				.getSingleResult();
-		if(temp==null) {
-			throw new FoodSaverNotFoundException("Volunteer not found of username - "+v.getUname());
+		}
+		catch (NoResultException e) {
+		    throw new FoodSaverNotFoundException("Volunteer not found with username - " + v.getUname());
 		}
 		// TODO Auto-generated method stub
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -90,6 +96,20 @@ public class VolunteerDAOImpl implements VolunteerDao{
 	public void addRequest(Volunteer v) {
 		// TODO Auto-generated method stub
 		em.merge(v);
+	}
+	@Override
+	public List<Volunteer> findByName(String uname) {
+		// TODO Auto-generated method stub
+		TypedQuery<Volunteer>volunteers = em.createQuery("from Volunteer where uname=:name",Volunteer.class)
+				.setParameter("name", uname);
+		List<Volunteer>vs = volunteers.getResultList();
+		return vs;
+	}
+	@Override
+	public void deleteById(int id) {
+		// TODO Auto-generated method stub
+		Volunteer v = em.find(Volunteer.class, id);
+		em.remove(v);
 	}
 
 }
