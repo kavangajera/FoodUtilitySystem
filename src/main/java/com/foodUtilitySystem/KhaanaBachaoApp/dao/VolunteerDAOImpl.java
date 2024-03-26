@@ -36,12 +36,16 @@ public class VolunteerDAOImpl implements VolunteerDao{
 		TypedQuery<Volunteer>vq = em.createQuery("from Volunteer where city=:city",Volunteer.class);
 		vq.setParameter("city",city);
 		volunteers = vq.getResultList();
+		if(volunteers.isEmpty()) {
+			throw new FoodSaverNotFoundException("No food requests are made in city - "+city);
+		}
 		return volunteers;
 	}
 
 	@Override
 	@Transactional
 	public void donateFood(Volunteer v,int qty) {
+		
 		// TODO Auto-generated method stub
 		try {
 			TypedQuery<Volunteer>temp = em.createQuery("from Volunteer v where v.uname=:name",Volunteer.class)
@@ -55,6 +59,7 @@ public class VolunteerDAOImpl implements VolunteerDao{
 		String strdate = v.getDueDate();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate dueDate = LocalDate.parse(strdate, formatter);
+		
 		if(LocalDate.now().compareTo(dueDate)>0) {
 			throw new FoodSaverNotFoundException("Date is expired!");
 		}
@@ -67,8 +72,10 @@ public class VolunteerDAOImpl implements VolunteerDao{
 		em.merge(ds);
 		
 		String vol = uname;
-		String msg2 = "Received Food: "+v.getFoodName()+" from"+donor;
-		DonationReceived dr = new DonationReceived(vol,msg2);
+		String msg2;
+		
+	    msg2 = "Received Food: "+v.getFoodName()+" from"+donor;
+	    DonationReceived dr = new DonationReceived(vol,msg2);
 		em.merge(dr);
 		
 		
