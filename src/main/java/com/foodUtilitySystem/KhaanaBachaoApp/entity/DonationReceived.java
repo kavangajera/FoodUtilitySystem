@@ -15,7 +15,7 @@ public class DonationReceived {
 	@Column(name="id")
     private int id;
 	
-	@Column(name="username")
+	@Column(name="volunteer")
 	private String volunteer;
 	@Column(name="history")
 	private String history;

@@ -5,6 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
 
 import com.foodUtilitySystem.KhaanaBachaoApp.entity.DonationDetails;
@@ -21,6 +22,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;  
 import java.time.format.DateTimeFormatter;  
 @Repository
+@Lazy
 public class VolunteerDAOImpl implements VolunteerDao{
 
 	
@@ -56,6 +58,8 @@ public class VolunteerDAOImpl implements VolunteerDao{
 		    // Handle the case when no result is found
 		    throw new FoodSaverNotFoundException("Volunteer not found with username - " + v.getUname());
 		}
+		
+		
 		String strdate = v.getDueDate();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate dueDate = LocalDate.parse(strdate, formatter);
@@ -63,19 +67,20 @@ public class VolunteerDAOImpl implements VolunteerDao{
 		if(LocalDate.now().compareTo(dueDate)>0) {
 			throw new FoodSaverNotFoundException("Date is expired!");
 		}
+		
+		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String donor = auth.getName();  
 		int curr_qty=v.getQty();
 		String uname = v.getUname();
-		String msg = "Donated Food: "+v.getFoodName()+" "+qty+" to "+uname;
+		String msg = "Donated Food: "+v.getFoodName()+" of "+qty+" to "+uname;
 		DonationDetails ds = new DonationDetails(donor,msg);
 		em.merge(ds);
 		
-		String vol = uname;
-		String msg2;
 		
-	    msg2 = "Received Food: "+v.getFoodName()+" from"+donor;
-	    DonationReceived dr = new DonationReceived(vol,msg2);
+		
+	    String msg2 = "Received Food: "+v.getFoodName()+" of quantity "+qty+" from"+donor;
+	    DonationReceived dr = new DonationReceived(uname,msg2);
 		em.merge(dr);
 		
 		
@@ -106,7 +111,7 @@ public class VolunteerDAOImpl implements VolunteerDao{
 		DonationDetails ds = new DonationDetails(donor,msg1);
 		em.merge(ds);
 		String vol = uname;
-		String msg2 = "Received Rs."+amount+" from"+donor;
+		String msg2 = "Received Rs."+amount+" from "+donor;
 		DonationReceived dr = new DonationReceived(vol,msg2);
 		em.merge(dr);
 	}

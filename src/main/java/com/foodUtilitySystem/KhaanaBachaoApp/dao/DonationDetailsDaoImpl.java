@@ -2,6 +2,7 @@ package com.foodUtilitySystem.KhaanaBachaoApp.dao;
 
 import java.util.List;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
@@ -15,6 +16,7 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 
 @Repository
+@Lazy
 public class DonationDetailsDaoImpl implements DonationDetailsDAO{
 
 	private EntityManager em;
