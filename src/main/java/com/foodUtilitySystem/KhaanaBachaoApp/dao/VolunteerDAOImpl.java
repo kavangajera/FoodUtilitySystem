@@ -65,6 +65,13 @@ public class VolunteerDAOImpl implements VolunteerDao{
 		LocalDate dueDate = LocalDate.parse(strdate, formatter);
 		
 		if(LocalDate.now().compareTo(dueDate)>0) {
+			String msg ="Date of the food "+v.getFoodName()+" is expired . So kindly remove the request!!";
+			DonationReceived dr = new DonationReceived(v.getUname(),msg);
+			em.merge(dr);
+		}
+		
+		if(LocalDate.now().compareTo(dueDate)>0) {
+			
 			throw new FoodSaverNotFoundException("Date is expired!");
 		}
 		
@@ -119,7 +126,7 @@ public class VolunteerDAOImpl implements VolunteerDao{
 	@Transactional
 	public void addRequest(Volunteer v) {
 		// TODO Auto-generated method stub
-		em.merge(v);
+		em.persist(v);
 	}
 	@Override
 	public List<Volunteer> findByName(String uname) {
@@ -127,6 +134,9 @@ public class VolunteerDAOImpl implements VolunteerDao{
 		TypedQuery<Volunteer>volunteers = em.createQuery("from Volunteer where uname=:name",Volunteer.class)
 				.setParameter("name", uname);
 		List<Volunteer>vs = volunteers.getResultList();
+		if(vs.isEmpty()) {
+			 throw new FoodSaverNotFoundException("You have not made any requests yet");
+		}
 		return vs;
 	}
 	@Override

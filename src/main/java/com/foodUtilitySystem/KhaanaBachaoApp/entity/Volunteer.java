@@ -1,10 +1,13 @@
 package com.foodUtilitySystem.KhaanaBachaoApp.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -26,6 +29,10 @@ public class Volunteer {
 	private int qty;
 	@Column(name="due_date")
 	private String dueDate;
+	
+	@OneToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="food_id")
+	private Food food;
 	public Volunteer() {
 		
 	}
@@ -72,6 +79,13 @@ public class Volunteer {
 	}
 	public void setDueDate(String dueDate) {
 		this.dueDate = dueDate;
+	}
+	
+	public Food getFood() {
+		return food;
+	}
+	public void setFood(Food food) {
+		this.food = food;
 	}
 	@Override
 	public String toString() {
